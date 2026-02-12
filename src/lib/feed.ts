@@ -18,7 +18,8 @@ interface RSSConfig {
 
 // 站点配置
 const config: RSSConfig = {
-  siteUrl: SITE.website,
+  // Normalize to avoid generating URLs like `https://example.com//atom.xml`
+  siteUrl: SITE.website.replace(/\/+$/, ''),
   title: SITE.title,
   description: SITE.description,
   author: SITE.author,
@@ -222,7 +223,7 @@ export async function generateRSS20(): Promise<string> {
     <author>${escapeXml(author)}</author>
     <pubDate>${lastBuildDate}</pubDate>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
-    <generator>Astro Litos Theme</generator>
+    <generator>Astro</generator>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml" />
     ${processedPosts
       .map(
@@ -259,12 +260,12 @@ export async function generateAtom10(): Promise<string> {
   <link href="${siteUrl}" rel="alternate" type="text/html"/>
   <updated>${lastBuildDate}</updated>
   <language>${lang}</language>
-  <id>${siteUrl}/</id>
+  <id>${siteUrl}</id>
   <author>
     <name>${escapeXml(author)}</name>
     <uri>${siteUrl}</uri>
   </author>
-  <generator uri="https://github.com/Dnzzk2/Litos" version="5.0">Astro Litos Theme</generator>
+  <generator uri="https://github.com/xzhiyouu62">Astro</generator>
   <rights>Copyright © ${new Date().getFullYear()} ${escapeXml(author)}</rights>
   ${processedPosts
     .map(

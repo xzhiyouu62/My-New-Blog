@@ -14,13 +14,12 @@ import type {
 
 //--- Readme Page Config ---
 export const SITE: Site = {
-  title: 'Litos',
-  description:
-    'Litos is a modern blogging theme built on Astro.js, designed for developers. It supports multiple post layouts, photo displays, project displays, and more, providing an elegant user experience and powerful customization capabilities.',
-  website: 'https://litos.vercel.app/',
+  title: "xzhiyouu's Blog",
+  description: "xzhiyouu's personal blog, sharing insights and projects related to web development, programming, and technology.",
+  website: 'https://www.xzhiyouu.me/',
   lang: 'en',
   base: '/',
-  author: 'Dnzzk2',
+  author: 'xzhiyouu',
   ogImage: '/og-image.webp',
   transition: false,
 }
@@ -67,19 +66,15 @@ export const FOOTER_LINKS: Link[] = [
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     name: 'github',
-    url: 'https://github.com/yourname',
+    url: 'https://github.com/xzhiyouu62',
     icon: 'icon-[ri--github-fill]',
     count: 19,
   },
   {
-    name: 'twitter',
-    url: 'https://x.com/yourname',
-    icon: 'icon-[ri--twitter-x-fill]',
-  },
-  {
-    name: 'bilibili',
-    url: 'https://space.bilibili.com/yourSpaceId',
-    icon: 'icon-[ri--bilibili-fill]',
+    name: 'instagram',
+    url: 'https://www.instagram.com/xzhiyouu',
+    icon: 'icon-[ri--instagram-fill]',
+    count: 182,
   },
 ]
 
@@ -149,11 +144,6 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
           icon: 'icon-[mdi--tailwind]',
           url: 'https://tailwindcss.com/',
         },
-        {
-          name: 'Iconify',
-          icon: 'icon-[line-md--iconify2-static]',
-          url: 'https://iconify.design/',
-        },
       ],
     },
     {
@@ -168,11 +158,6 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
           name: 'Git',
           icon: 'icon-[mdi--git]',
           url: 'https://git-scm.com/',
-        },
-        {
-          name: 'MongoDB',
-          icon: 'icon-[lineicons--mongodb]',
-          url: 'https://www.mongodb.com/',
         },
         {
           name: 'Vercel',
@@ -194,16 +179,16 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
 
 export const GITHUB_CONFIG: GithubConfig = {
   ENABLED: true,
-  GITHUB_USERNAME: 'Dnzzk2',
+  GITHUB_USERNAME: 'xzhiyouu62',
   TOOLTIP_ENABLED: true,
 }
 
 //--- Posts Page Config ---
 export const POSTS_CONFIG: PostConfig = {
   title: 'Posts',
-  description: 'Posts by Dnzzk2',
-  introduce: 'Here, I will share the usage instructions for this theme to help you quickly use it.',
-  author: 'Dnzzk2',
+  description: 'Posts by xzhiyouu62',
+  introduce: 'Here are some posts by meeeeeee~',
+  author: 'xzhiyouu62',
   homePageConfig: {
     size: 5,
     type: 'compact',
@@ -238,8 +223,8 @@ export const COMMENT_CONFIG: CommentConfig = {
     clientID: import.meta.env.PUBLIC_GITHUB_CLIENT_ID,
     clientSecret: import.meta.env.PUBLIC_GITHUB_CLIENT_SECRET,
     repo: 'gitalk-comment',
-    owner: 'Dnzzk2',
-    admin: ['Dnzzk2'],
+    owner: 'xzhiyouu62',
+    admin: ['xzhiyouu62'],
     language: 'en-US',
     perPage: 5,
     pagerDirection: 'last',
@@ -257,14 +242,14 @@ export const TAGS_CONFIG: TagsConfig = {
 
 export const PROJECTS_CONFIG: ProjectConfig = {
   title: 'Projects',
-  description: 'The examples of my projects.',
-  introduce: 'The examples of my projects.',
+  description: 'My projects.',
+  introduce: 'Feel free to explore and check out the code on GitHub!',
 }
 
 export const PHOTOS_CONFIG: PhotosConfig = {
   title: 'Photos',
   description: 'Here I will record some photos taken in daily life.',
-  introduce: 'Here I will record some photos taken in daily life.',
+  introduce: 'Some of my daily life~',
 }
 
 export const ANALYTICS_CONFIG: AnalyticsConfig = {
