@@ -1,0 +1,155 @@
+---
+title: 'UWSP Pointer Overflow CTF writeup'
+description: ''
+pubDate: 2024-11-12
+cover: './assets/cover.png'
+tags: ['CTF']
+draft: false
+pinned: true
+recommend: true
+---
+
+#### CTFtime: https://ctftime.org/event/2121/
+
+> - player: xzhiyouu
+
+## Web 100 - The Way Out is Through
+
+- ### Problem description
+
+![solve](https://hackmd.io/_uploads/SJeNxC1Mkl.png)
+
+The question provided a link, so I clicked on it, but there was nothing there.
+![101](https://hackmd.io/_uploads/S1g-rRnyMye.png)
+So I switched to the source code to look at it, and found that the flag seemed to be divided into five parts.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TTiOT</title>
+  </head>
+  <body>
+    <h1>Not Found</h1>
+    <p>The requested URL /snazzy-dump-pics.html was not found on this server.</p>
+    <hr />
+    <p><i>Apache/1.1.3 (Ubuntu) Server at localhost Port 1337</i></p>
+
+    <script>
+      let part_1 = [112, 111, 99, 116].map((x) => String.fromCharCode(x)).join('')
+      let part_2 = atob('Znt1d3NwXw==')
+      let part_3 = 'document.cookie'
+      let part_4 = 'XzdydTdoXw=='
+      let part_5_hex = [0x31, 0x35, 0x5f, 0x30, 0x75, 0x37, 0x5f, 0x37, 0x68, 0x33, 0x72, 0x33, 0x7d]
+
+      console.log('The Tooth is Over There.')
+      document.cookie = '\u0037\u0068\u0033'
+    </script>
+  </body>
+</html>
+```
+
+```html
+let part_1 = [112, 111, 99, 116].map(x => String.fromCharCode(x)).join('');
+```
+
+This line converts each number in **[112, 111, 99, 116]** to a character (ASCII values).<br />
+So the result of part_1 will be `poct`<br />
+
+```html
+let part_2 = atob("Znt1d3NwXw==");
+```
+
+This part uses atob() to decode a Base64 string<br />
+The result of part*2 will be `f{uwsp*`<br />
+
+```html
+let part_3 = "document.cookie";
+```
+
+This sets a cookie value in document.cookie using Unicode escape sequences.<br />We can see the value of document.cookie below.
+
+```html
+document.cookie = "\u0037\u0068\u0033";
+```
+
+The result of part_3 will be `7h3`
+
+```html
+let part_4 = "XzdydTdoXw==";
+```
+
+Just another Base64 string to decode.<br />
+The result of part*4 will be `\_7ru7h*`<br />
+
+```html
+part_5_hex = [0x31, 0x35, 0x5f, 0x30, 0x75, 0x37, 0x5f, 0x37, 0x68, 0x33, 0x72, 0x33, 0x7d];
+```
+
+This is an array of hexadecimal values representing ASCII characters.<br />
+The result of part_5 will be `15_0u7_7h3r3}`<br />
+
+So just put all the broken flags together to get the final answer.
+`poctf{uwsp_7h3_7ru7h_15_0u7_7h3r3}`
+
+## Web 100 - Giving Up the Game
+
+- ### Problem description
+  ![solve2](https://hackmd.io/_uploads/SyiPeCyzyx.png)
+
+It’s also a Web question type...<br />
+You will see a game called Space Adventure starting up and spinning for a long time.<br />
+![link](https://hackmd.io/_uploads/B1b2g0kf1g.png)
+We check the source code first.<br />
+So I got this.<br />
+
+```html
+<body>
+  <div class="loading-container">
+    <div id="loading-text">Loading Space Adventure... Please wait.</div>
+
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
+
+    <div class="loading-spinner"></div>
+
+    <div class="fake-tips">Tip: Collect all power-ups to upgrade your ship! 💥</div>
+  </div>
+
+  <script>
+    const tips = [
+      'Tip: Collect all power-ups to upgrade your ship! 💥',
+      'Tip: Watch out for asteroids in Sector 7! 🪨',
+      'Tip: Shields down! Restore power to your defenses! ⚡',
+      'Tip: New ship parts available at the space station! 🚀',
+      'Tip: Find the hidden treasure on Planet Zog! 🌌',
+    ]
+
+    let tipIndex = 0
+    const tipElement = document.querySelector('.fake-tips')
+
+    setInterval(() => {
+      tipIndex = (tipIndex + 1) % tips.length
+      tipElement.textContent = tips[tipIndex]
+    }, 7000) // Change tips every 7 seconds
+    fetch('/getSprites')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('VGhhbmsgeW91IE1hcmlvISBCdXQgb3VyIHByaW5jZXNzIGlzIGluIGFub3RoZXIgY2FzdGxlIQ==')
+      })
+  </script>
+</body>
+```
+
+I saw a string at the bottom that looked like Base64, so I took it to decode it.<br />
+The result will be: `Thank you Mario! But our princess is in another castle!`<br />
+Okay, this doesn't look like a flag.<br />
+After carefully checking the code, I found a path called `/getSprites`<br />
+Entering the page, I got another string of Base64<br />
+`cG9jdGZ7dXdzcF8xXzdIMW5rXzdIM3IzcjBfMV80bX0=`<br />
+Okay, let's take it to the decoder to decode it.<br />
+Then I got the right flag!<br />
+`poctf{uwsp_1_7H1nk_7H3r3r0_1_4m}`

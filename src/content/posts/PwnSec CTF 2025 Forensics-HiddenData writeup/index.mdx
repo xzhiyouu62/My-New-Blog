@@ -1,0 +1,161 @@
+---
+title: 'PwnSec CTF 2025 Forensics-HiddenData writeup'
+description: ''
+pubDate: 2025-11-18
+cover: './assets/cover.png'
+tags: ['CTF']
+draft: false
+pinned: true
+recommend: true
+---
+
+#### CTFtime: https://ctftime.org/event/2906
+
+![image](https://hackmd.io/_uploads/r1bVWa_e-l.png)
+
+下載後會發現是一個Windows的檔案
+![image](https://hackmd.io/_uploads/r1OvGauebe.png)
+
+題目敘述提到了 chatting ，所以可能跟 Discord 有關<br />
+上網找了一下有關 Discord chatting Forensics 的資料<br />
+找到這篇報告 [link](https://scispace.com/pdf/discord-server-forensics-analysis-and-extraction-of-digital-ci00a3c2ep.pdf)<br />
+可以發現 Discord 的聊天紀錄都會儲存在 `\AppData\Roaming\discord\Cache\Cache_Data` 這個快取裡面，並且報告中提到可以使用 [ChromeCacheView](https://www.nirsoft.net/utils/chrome_cache_view.html) 這個工具檢視 Discord 的快取檔案<br />
+
+![image](https://hackmd.io/_uploads/BJ-5Naug-g.png)
+
+找到有 `/messages?limit=50` 的檔案<br />
+打開後可以發現這個<br />
+
+```json
+  {
+    "type": 0,
+    "content": "Got it I'll copy it now",
+    "mentions": [],
+    "mention_roles": [],
+    "attachments": [],
+    "embeds": [],
+    "timestamp": "2025-10-31T10:18:20.453000+00:00",
+    "edited_timestamp": null,
+    "flags": 0,
+    "components": [],
+    "id": "1433762006892023870",
+    "channel_id": "1429495896353280162",
+    "author": {
+      "id": "1377987216671772784",
+      "username": "username12345_12345",
+      "avatar": null,
+      "discriminator": "0",
+      "public_flags": 0,
+      "flags": 0,
+      "banner": null,
+      "accent_color": null,
+      "global_name": null,
+      "avatar_decoration_data": null,
+      "collectibles": null,
+      "display_name_styles": null,
+      "banner_color": null,
+      "clan": null,
+      "primary_guild": null
+    },
+    "pinned": false,
+    "mention_everyone": false,
+    "tts": false
+  },
+  {
+    "type": 0,
+    "content": "After 5 minutes, the password will be deleted.",
+    "mentions": [],
+    "mention_roles": [],
+    "attachments": [],
+    "embeds": [],
+    "timestamp": "2025-10-31T10:17:47.513000+00:00",
+    "edited_timestamp": null,
+    "flags": 0,
+    "components": [],
+    "id": "1433761868731912332",
+    "channel_id": "1429495896353280162",
+    "author": {
+      "id": "1427528808570814615",
+      "username": "zero____day0",
+      "avatar": null,
+      "discriminator": "0",
+      "public_flags": 0,
+      "flags": 0,
+      "banner": null,
+      "accent_color": null,
+      "global_name": null,
+      "avatar_decoration_data": null,
+      "collectibles": null,
+      "display_name_styles": null,
+      "banner_color": null,
+      "clan": null,
+      "primary_guild": null
+    },
+    "pinned": false,
+    "mention_everyone": false,
+    "tts": false
+  },
+  {
+    "type": 0,
+    "content": "Here’s the secret link — https://pastebin.com/AAGyxC3p",
+    "mentions": [],
+    "mention_roles": [],
+    "attachments": [],
+    "embeds": [
+      {
+        "type": "link",
+        "url": "https://pastebin.com/AAGyxC3p",
+        "title": "Pastebin.com - Locked Paste",
+        "description": "Pastebin.com is the number one paste tool since 2002. Pastebin is a website where you can store text online for a set period of time.",
+        "provider": {
+          "name": "Pastebin"
+        },
+        "content_scan_version": 0
+      }
+    ],
+    "timestamp": "2025-10-31T10:17:20.211000+00:00",
+    "edited_timestamp": null,
+    "flags": 0,
+    "components": [],
+    "id": "1433761754219020439",
+    "channel_id": "1429495896353280162",
+    "author": {
+      "id": "1427528808570814615",
+      "username": "zero____day0",
+      "avatar": null,
+      "discriminator": "0",
+      "public_flags": 0,
+      "flags": 0,
+      "banner": null,
+      "accent_color": null,
+      "global_name": null,
+      "avatar_decoration_data": null,
+      "collectibles": null,
+      "display_name_styles": null,
+      "banner_color": null,
+      "clan": null,
+      "primary_guild": null
+    },
+    "pinned": false,
+    "mention_everyone": false,
+    "tts": false
+  },
+```
+
+發現 `https://pastebin.com/AAGyxC3p`<br />
+但進去後要輸入密碼才能打開<br />
+從聊天紀錄推測出他複製了密碼<br />
+所以必須從 Windows 的紀錄中找到他到底複製了什麼<br />
+上網爬了一下資料發現這個文章 [link](https://www.inversecos.com/2022/05/how-to-perform-clipboard-forensics.html)<br />
+使用者的很多行為都會記錄在 `\AppData\Local\ConnectedDevicesPlatform\<id>\ActivitiesCache.db` 之下<br />
+這邊使用 DB Browser for SQLite 去看這個 database<br />
+
+![image](https://hackmd.io/_uploads/BJMCUTOgZx.png)
+
+解碼 base64 之後發現密碼是 `Th1$_1$_r3@l_p@$$w0rd!`
+
+貼到剛剛對話中出現的連結後就可以拿到 flag 了
+
+![image](https://hackmd.io/_uploads/H1smDa_ebl.png)
+
+Flag: `flag{12d65e001866f854c23a48f0d47957ed}`

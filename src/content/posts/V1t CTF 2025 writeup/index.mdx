@@ -1,0 +1,119 @@
+---
+title: 'V1t CTF 2025 writeup'
+description: ''
+pubDate: 2025-11-03
+cover: './assets/cover.png'
+tags: ['CTF']
+draft: false
+pinned: true
+recommend: true
+---
+
+#### CTFtime: https://ctftime.org/event/2920
+
+> Author: xzhiyouu
+
+**Please don’t mind my broken English.**
+
+This is the first CTF I played with [Flagaholic](https://ctftime.org/team/113364).<br />
+We got TOP 5 in the end.<br />
+Thanks to my teammate and I :D<br />
+Final Scoreboard here~<br />
+![image](https://hackmd.io/_uploads/S1hC_lHkZe.png)
+
+I will write writeups for some interesting or guessy challenges.
+
+---
+
+### [Misc] Dont Bother
+
+![image](https://hackmd.io/_uploads/rkjB2eHyZl.png)
+
+This challenge was too guessy, so out of more than 1,200 teams, only 16 managed to solve it.
+
+Here’s my solution.
+
+The image is 512×512 and in RGB format. Most pixels share the same base color (64, 77, 205).
+
+Some pixels have been increased by 2 in certain channels (only 0 or +2, never a decrease), so they differ slightly from the base color.
+
+The image is divided into many small square blocks, and only those along the main diagonal contain these “+2 footprints.”
+
+In each diagonal block, if you sum up all the “+2 occurrences” of its pixels, you get an integer.
+
+That sequence of integers represents ASCII codes, which together form the flag.
+
+Solution code~
+
+```python
+from PIL import Image
+import numpy as np
+
+img = Image.open("chal.jpg").convert("RGB")
+arr = np.array(img, dtype=np.uint8)
+base = np.array([64, 77, 205], dtype=np.int32)
+
+delta = arr.astype(np.int32) - base
+steps = np.clip(delta, 0, None) // 2
+steps = steps.sum(axis=2)
+
+n = 32
+h, w = steps.shape
+bh, bw = h // n, w // n
+codes = []
+for i in range(n):
+    block = steps[i*bh:(i+1)*bh, i*bw:(i+1)*bw]
+    codes.append(block.sum())
+
+flag = ''.join(chr(c) for c in codes).rstrip('\x00')
+print(flag)
+# v1t{c4nt_B3_both3r3d_vnkud1837}
+```
+
+GUESSY CHALL :>
+
+---
+
+### [Misc] MOOOO
+
+![image](https://hackmd.io/_uploads/ryLPnlHybe.png)
+
+This is a cool challenge lol
+
+You can find comment with COW programming language through exiftool.
+
+After running the code, we got `thismaybeapasswordbutwhoreallyknowsimjustmessginitisapassword`
+
+Do steghide to `MOOOO.jpeg`, and got `TRYYY.txt`
+there are many invisible spaces in the .txt file
+
+Since I played SCIST Final CTF before, someone made a [tool](https://github.com/Morexsyan/stegburp/) for solving this problem.
+
+Got the flag `v1t{D0wn_Th3_St3gN0_R4bb1t_H0l3}`
+
+---
+
+### [Forensics] Tryna crack?
+
+![image](https://hackmd.io/_uploads/B1XobfBJbg.png)
+
+This challenge also guessy, many people try to brute force the zip file password, but actually you can solve it with the tool "[bkcrack](https://github.com/kimci86/bkcrack/releases)"
+
+I got `quackquackquack.png` after extracting `challenge.zip`.
+
+After checking with exiftool, I found a comment that says
+`password for zip file =)))) D4mn_br0_H0n3y_p07_7yp3_5h1d`
+
+BUT THE FLAG ISN'T `v1t{D4mn_br0_H0n3y_p07_7yp3_5h1d}`
+
+lots of people are stuck here lol
+
+I looked deeper and tried adjusting the image’s width and height, then got this.
+
+![image](https://hackmd.io/_uploads/ryh34MSyWe.png)
+
+The Morse code below translates to “SHA512.”
+
+So it’s clear that the flag is supposed to be the SHA-512 of `D4mn_br0_H0n3y_p07_7yp3_5h1d`.
+
+Got flag `v1t{7083748baa3a42dc0a93811e4f5150e7ae1a050a0929f8c304f707c8c44fc95d86c476d11c9e56709edc30eba5f2d82396f426d93870b56b1a9573eaac8d0373}`
