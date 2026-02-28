@@ -1,0 +1,188 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import PageTitle from '~/components/base/PageTitle.astro'
+
+const title = 'About'
+const description = 'About xzhiyouu'
+const introduce = 'A little bit about me.'
+---
+
+<Layout {title} {description}>
+  <div class="relative z-[1] py-8 pb-10">
+    <div class="px-6 sm:px-8">
+      <PageTitle {title} {introduce} />
+    </div>
+    <SectionDivider />
+    <div class="px-6 sm:px-8 py-8 fade-up">
+      <h2 class="text-2xl sm:text-3xl tracking-tight mb-4">I'm xzhiyouu~</h2>
+      <div class="text-muted-foreground space-y-4 text-pretty">
+        <p>Hi~ I am a CTF player and like to explore something new!</p>
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="px-6 sm:px-8 py-8 fade-up">
+      <h2 class="text-2xl sm:text-3xl tracking-tight mb-2">Experience</h2>
+      <h3 class="text-lg font-semibold mt-6 mb-3">CTFtime</h3>
+      <p class="text-muted-foreground mb-4">
+        Team: <a href="https://ctftime.org/team/113364/" target="_blank" class="font-bold hover:text-foreground transition-colors underline"
+          >Sanrioholic</a
+        >
+        &nbsp;·&nbsp; Rank: <strong>2025 HK 3rd / Overall 159th</strong>
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="py-2 pr-8 font-medium text-muted-foreground">CTF Name</th>
+              <th class="py-2 font-medium text-muted-foreground">Rank</th>
+            </tr>
+          </thead>
+          <tbody class="text-muted-foreground">
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2924" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >hxp 39C3 CTF</a
+                >
+              </td>
+              <td class="py-2">93 / 1350</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2862" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >SECCON CTF 14 Quals</a
+                >
+              </td>
+              <td class="py-2">76 / 817</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2901" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >2025 Null CTF</a
+                >
+              </td>
+              <td class="py-2">7 / 611</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2869" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >HeroCTF v7</a
+                >
+              </td>
+              <td class="py-2">53 / 1052</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2850" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >2025 PatriotCTF</a
+                >
+              </td>
+              <td class="py-2">5 / 1343</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2906" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >2025 PwnSec CTF</a
+                >
+              </td>
+              <td class="py-2">36 / 432</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-8">
+                <a href="https://ctftime.org/event/2920" target="_blank" class="hover:text-foreground transition-colors underline"
+                  >2025 V1t CTF</a
+                >
+              </td>
+              <td class="py-2">5 / 1237</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="px-6 sm:px-8 py-8 fade-up">
+      <h2 class="text-2xl sm:text-3xl tracking-tight mb-6">Course</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="py-2 pr-8 font-medium text-muted-foreground">Name</th>
+              <th class="py-2 font-medium text-muted-foreground">Description</th>
+            </tr>
+          </thead>
+          <tbody class="text-muted-foreground">
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">2024 資安從零開匙</td>
+              <td class="py-2">學員 / Final CTF rk.2</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">2024 9/11-9/15 SecurityFocus Online</td>
+              <td class="py-2">學員</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">2024 高中職 AI×資安 創意設計工作坊</td>
+              <td class="py-2">團體佳作</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">2024 AI助力 安全領航:資訊安全課程研習營</td>
+              <td class="py-2">學員</td>
+            </tr>
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">2024 臺灣尚青 TAIWAN HolyYoung Training - 網站安全</td>
+              <td class="py-2">學員</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-8 whitespace-nowrap">2024 南大附中 斗六高中 資研社主辦之一日資訊體驗營(臺北場)</td>
+              <td class="py-2">學員</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="px-6 sm:px-8 py-8 fade-up">
+      <h2 class="text-2xl sm:text-3xl tracking-tight mb-6">Community</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="py-2 pr-8 font-medium text-muted-foreground">Name</th>
+              <th class="py-2 font-medium text-muted-foreground">Description</th>
+            </tr>
+          </thead>
+          <tbody class="text-muted-foreground">
+            <tr class="border-b border-border/50">
+              <td class="py-2 pr-8 whitespace-nowrap">THJCC CTF 2026 第三屆臺灣高中職聯合競賽</td>
+              <td class="py-2">出題</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-8 whitespace-nowrap">高中職跨校資安社團ZeroDay C00kies 零日餅乾社</td>
+              <td class="py-2">第一屆幹部</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="px-6 sm:px-8 py-8 fade-up">
+      <h2 class="text-2xl sm:text-3xl tracking-tight mb-4">Contact</h2>
+      <div class="text-muted-foreground space-y-2">
+        <p>Feel free to reach out through any of the social links below.</p>
+        <ul class="list-disc list-inside space-y-1 mt-2">
+          <li>
+            GitHub:
+            <a href="https://github.com/xzhiyouu62" target="_blank" class="underline hover:text-foreground transition-colors">
+              xzhiyouu62
+            </a>
+          </li>
+          <li>
+            Instagram:
+            <a href="https://www.instagram.com/xzhiyouu" target="_blank" class="underline hover:text-foreground transition-colors">
+              @xzhiyouu
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</Layout>
